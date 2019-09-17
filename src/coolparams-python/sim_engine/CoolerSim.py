@@ -21,7 +21,10 @@ class CoolerSim:
         self.thermal_cond = 10      # [W/(m*C)]
         self.cooler_area = 1        # [m^2]
         self.wall_thick = 0.01      # [m]
-        self.sim_time = 600         # [s]
+        self.sim_time = 10         # [s]
+
+    def __main__(self):
+        pass
 
     def get_heat_transfer_rate(self, k, T_in, T_out, thickness):
         """
@@ -48,13 +51,14 @@ class CoolerSim:
         """
         x_time = range(self.sim_time)
         y_heat = []
-        for i in self.x_time:
-            y_heat.append(self.get_heat_flux(self.thermal_cond,
-                                             self.internal_temp,
-                                             self.external_temp,
-                                             self.wall_thick))
+        for i in x_time:
+            y_heat.append(self.get_heat_transfer_rate(self.thermal_cond,
+                                                      self.internal_temp,
+                                                      self.external_temp,
+                                                      self.wall_thick))
         plt.figure(1)
         plt.plot(x_time, y_heat)
         plt.savefig("sim_plot.png")
+        plt.show()
 
 

@@ -7,11 +7,11 @@ import sys
 import os
 import getpass
 from pyfiglet import Figlet
-from sim_engine import CoolerSim
+from sim_engine.CoolerSim import CoolerSim
 
 
 class Cooler(cmd.Cmd):
-    """A simple cmd application using cmd. For the STW Jarvis project.
+    """A simple cmd application using cmd.
     """
     custom_fig = Figlet(font='slant')
     intro = 'Welcome to the Cooler shell.  Type help or ? to list commands.\n'
@@ -21,7 +21,7 @@ class Cooler(cmd.Cmd):
 
     def do_status(self, arg):
         """status: Yields device status for the edge device.
-        Returns a table of details related to health of JARVIS unit.
+        Returns a table of details related to health of unit.
         """
         def status():
             """Runs the list generation
@@ -61,5 +61,6 @@ class Cooler(cmd.Cmd):
             self.file = None
 
 
-c = Cooler()
-sys.exit(c.cmdloop())
+if __name__ == "__main__":
+    c = Cooler()
+    sys.exit(c.cmdloop())
