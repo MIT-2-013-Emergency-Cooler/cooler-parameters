@@ -20,7 +20,7 @@ class Cooler(cmd.Cmd):
     print(custom_fig.renderText('  Cooler Params'))
 
     def do_status(self, arg):
-        """status: Yields device status for the edge device.
+        """Yields device status for the edge device being used.
         Returns a table of details related to health of unit.
         """
         def status():
@@ -28,10 +28,11 @@ class Cooler(cmd.Cmd):
             """
             custom_fig = Figlet(font='slant')
             print(custom_fig.renderText(' status'))
+            print("You are running Cooler Params Version 0.0.1")
         status()
 
     def do_whoami(self, arg):
-        """Prints out user data
+        """Prints out user data specific to OS.
         """
         def whoami():
             print(getpass.getuser())
@@ -42,9 +43,10 @@ class Cooler(cmd.Cmd):
         whoami()
 
     def do_run_sim(self, arg):
-        """Begins prompt for sim engine
+        """Begins prompts for sim engine, step by step process.
         """
         coolsim_obj = CoolerSim()
+        coolsim_obj.get_sim_params()
         coolsim_obj.run_sim_plot()
 
 

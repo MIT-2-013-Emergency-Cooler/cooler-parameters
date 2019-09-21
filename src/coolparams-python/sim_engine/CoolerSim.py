@@ -8,7 +8,7 @@ import os
 import getpass
 from pyfiglet import Figlet
 import matplotlib.pyplot as plt
-
+from .CoolerParams import CoolerParams
 
 class CoolerSim:
     """
@@ -26,14 +26,22 @@ class CoolerSim:
     def __main__(self):
         pass
 
-    def get_heat_transfer_rate(self, k, T_in, T_out, thickness):
+    def get_sim_params(self):
+        """
+        Asks user questions in CoolerParams class.
+        :return:
+        """
+        cooler_params = CoolerParams()
+        cooler_params.get_cooler_params()
+
+    def get_heat_transfer_rate(self, k, temp_in, temp_out, thickness):
         """
         Calculates the following functions:
         q = - k dT/dx
         for heat transfer rate from the cooler given parameters
         :return: q
         """
-        return -k * (T_in - T_out)/(thickness)
+        return -k * (temp_in - temp_out)/thickness
 
     def get_heat_flux(self, q, area):
         """
