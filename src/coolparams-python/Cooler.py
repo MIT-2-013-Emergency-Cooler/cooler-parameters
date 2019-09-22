@@ -46,8 +46,8 @@ class Cooler(cmd.Cmd):
         """Begins prompts for sim engine, step by step process.
         """
         coolsim_obj = CoolerSim()
-        coolsim_obj.get_sim_params()
-        coolsim_obj.run_sim_plot()
+        coolsim_ans = coolsim_obj.get_sim_params()
+        coolsim_obj.run_simulation(coolsim_ans)
 
 
     def do_bye(self, arg):

@@ -17,11 +17,11 @@ class CoolerParams:
 
     def __init__(self):
         self.energy = 0
-        self.questions = ["What is the internal volume? [m^3]",
-                          "What is the average heat capacity of the item stored in the cooler?",
+        self.questions = ["What is the internal volume of the cooler? [m^3]",
+                          "What is the average heat capacity of the item stored in the cooler? [Cp]",
                           "How many kgs of that item are there? [kg]",
                           "What is the density of that item? [kg/m^3]",
-                          "What average temperature is the cooler volume at? [degrees C]",
+                          "What temperature is the cooler set at? [degrees C]",
                           "What is the convection heat transfer coefficient in the cooler? [W/m^2 C]",
                           "What is the emissivity of the item stored in the cooler?",
                           "What is the thickness of the cooler inner surface [m]",
@@ -34,6 +34,8 @@ class CoolerParams:
                           "What is the emissivity of the cooler outer surface?"
                           "What is the ambient temperature outside the cooler?"
                           ]
+        self.item_temperature = [20, 25, 30, 35]  # [deg C] from best case to worst case, temperature of inserted item
+        self.ambient_humidity = [0, 0.25, 0.5, 0.75, 1.0]  # RH from best to worst, humidity of ambient air
 
     def get_cooler_params(self):
         """Asks a series of questions from user to get information on fridge in question.
@@ -47,10 +49,9 @@ class CoolerParams:
                 try:
                     print(self.questions[i])
                     question_answer = float(input("\n"))
-                    cooler_params.append(i)
+                    cooler_params.append(question_answer)
                     break
                 except ValueError:
                     print("I didn't get that, try again.")
-
 
         return cooler_params

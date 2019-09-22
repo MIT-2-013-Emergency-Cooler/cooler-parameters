@@ -16,6 +16,7 @@ class CoolerSim:
     """
 
     def __init__(self):
+        # TODO: these self params are not used, just thinking for now.
         self.internal_temp = 4      # [C]
         self.external_temp = 25     # [C]
         self.thermal_cond = 10      # [W/(m*C)]
@@ -32,7 +33,9 @@ class CoolerSim:
         :return:
         """
         cooler_params = CoolerParams()
-        cooler_params.get_cooler_params()
+        cooler_q_ans = cooler_params.get_cooler_params()
+        return cooler_q_ans
+
 
     def get_heat_transfer_rate(self, k, temp_in, temp_out, thickness):
         """
@@ -52,21 +55,65 @@ class CoolerSim:
         """
         return q*area
 
-    def run_sim_plot(self):
+    def run_simulation(self, cooler_ans):
         """
-        Considers set params and plots them over a time.
+        Considers set params, finds temperature profiles, and plots them over a time.
+        Determines energy needed to run the cooler and cool object inside of it.
+        Uses thermal resistance model.
+        :param cooler_answers: Returned from the CoolerParams object with a
+        set of responses for the geometry and constants of the problem.
         :return:
         """
-        x_time = range(self.sim_time)
-        y_heat = []
-        for i in x_time:
-            y_heat.append(self.get_heat_transfer_rate(self.thermal_cond,
-                                                      self.internal_temp,
-                                                      self.external_temp,
-                                                      self.wall_thick))
-        plt.figure(1)
-        plt.plot(x_time, y_heat)
-        plt.savefig("sim_plot.png")
-        plt.show()
+        print(cooler_ans)
 
+        def get_thermal_resistance(cooler_answers):
+            """
+            From the sim params, find the thermal resistances across the system.
+            There is a long series system, with a parallel radiative and convective ends.
 
+            :return: list of 7 different thermal resistances. [rad_in, conv_in, in, wall, out, rad_out, conv_out]
+            """
+
+            length_inner = cooler_answers[7]                         # Length of inner cube's walls [m]
+            length_wall = cooler_answers[9]                          # Length of cube's walls [m]
+            length_outer = cooler_answers[11]                        # Length of outer cube's walls [m]
+            area_inner = (cooler_answers[0]) ** (2 / 3)              # Area of inner cube's surface [m^2]
+            area_wall = (length_inner + 2 * cooler_answers[7]) ** 2  # Area of cube wall's surface [m^2]
+            area_outer = (length_wall + 2 * cooler_answers[9]) ** 2  # Area of outer cube's surface [m^2]
+            # TODO: Fix radiative losses beyond simple model
+            rad_in = 10*cooler_answers[6]                       # resistance from internal radiative loss [deg C/W]
+            conv_in = 1 / (cooler_answers[5] * 6 * area_inner)  # resistance from internal convective loss [deg C/W]
+            cond_in = length_inner / (cooler_answers[8] * area_inner)    # R inner surface conduction [deg C/W]
+            cond_wall = length_wall / (cooler_answers[10] * area_wall)   # R wall conduction [deg C/W]
+            cond_out = length_outer / (cooler_answers[12] * area_outer)  # R outer surface conduction [deg C/W]
+            rad_out = 8*cooler_answers[14]                      # resistance from external radiative loss [deg C/W]
+            conv_out = 1 / (cooler_answers[13] * area_outer)    # resistance from external convective loss [deg C/W]
+            list_resistances = [rad_in, conv_in, cond_in, cond_wall, cond_out, rad_out, conv_out]
+            return list_resistances
+
+        def run_sim_plot(c_as, res, inner_temp, outer_temp):
+            """
+            First, find total heat transfer rate from the equivalent resistance and temperature difference.
+            Second, use piecewise thermal resistances to find temperature at each node.
+            Third, plot T(x) from inside cooler to ambient air.
+            :param c_as: cooler_answers from the cooler params class
+            :param res: list of resistances from get_thermal_resistances
+            :param inner_temp:
+            :param outer_temp:
+            :return:
+            """
+            R_eq = res[2] + res[3] + res[4] + (1/res[0] + 1/res[1])**(-1) + (1/res[5] + 1/res[6])**(-1)
+            Q_total = (outer_temp - inner_temp)/R_eq
+            x_distances = [0, c_as[7], c_as[7]+c_as[9], c_as[7]+c_as[9]+c_as[11], 1]    # distance from cooler center[m]
+            y_temperatures = []
+            y_temperatures[0] = inner_temp + Q_total / (1/res[0] + 1/res[1])**(-1)
+            y_temperatures[1] = inner_temp + Q_total / ((1/res[0] + 1/res[1])**(-1) + res[2])
+            # Plotting with matplotlib
+            plt.figure(1)
+            plt.plot(x_distances, y_temperatures)
+            plt.savefig("sim_plot.png")
+            plt.show()
+
+        therm_rads = get_thermal_resistance(cooler_ans)
+        print(therm_rads)
+        run_sim_plot()
