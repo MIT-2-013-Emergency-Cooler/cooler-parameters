@@ -31,7 +31,7 @@ class CoolerParams:
                           "What is the thickness of the cooler outer surface? [m]",
                           "What is the k of the cooler outer surface? [W/m C]",
                           "What is the convection heat transfer coefficient outside the cooler? [W/m^2 C]",
-                          "What is the emissivity of the cooler outer surface?"
+                          "What is the emissivity of the cooler outer surface?",
                           "What is the ambient temperature outside the cooler?"
                           ]
         self.item_temperature = [20, 25, 30, 35]  # [deg C] from best case to worst case, temperature of inserted item

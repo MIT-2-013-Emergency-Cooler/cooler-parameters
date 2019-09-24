@@ -104,16 +104,35 @@ class CoolerSim:
             """
             R_eq = res[2] + res[3] + res[4] + (1/res[0] + 1/res[1])**(-1) + (1/res[5] + 1/res[6])**(-1)
             Q_total = (outer_temp - inner_temp)/R_eq
-            x_distances = [0, c_as[7], c_as[7]+c_as[9], c_as[7]+c_as[9]+c_as[11], 1]    # distance from cooler center[m]
-            y_temperatures = []
-            y_temperatures[0] = inner_temp + Q_total / (1/res[0] + 1/res[1])**(-1)
-            y_temperatures[1] = inner_temp + Q_total / ((1/res[0] + 1/res[1])**(-1) + res[2])
+            cooler_width = ((c_as[0])**(1/3))/2
+            x_distances = [0,
+                           cooler_width,
+                           cooler_width+c_as[7],
+                           cooler_width+c_as[7]+c_as[9],
+                           cooler_width+c_as[7]+c_as[9]+c_as[11],
+                           cooler_width+c_as[7]+c_as[9]+c_as[11]+1]    # distance from cooler center[m]
+            y_temperatures = [0,0,0,0,0,0]
+            y_temperatures[0] = outer_temp - Q_total * ((1/res[5] + 1/res[6])**(-1) + res[4] + res[3] + res[2] + (1/res[0] + 1/res[1])**(-1))
+            y_temperatures[1] = outer_temp - Q_total * ((1/res[5] + 1/res[6])**(-1) + res[4] + res[3] + res[2])
+            y_temperatures[2] = outer_temp - Q_total * ((1/res[5] + 1/res[6])**(-1) + res[4] + res[3])
+            y_temperatures[3] = outer_temp - Q_total * ((1/res[5] + 1/res[6])**(-1) + res[4])
+            y_temperatures[4] = outer_temp - Q_total * (1/res[5] + 1/res[6])**(-1)
+            y_temperatures[5] = outer_temp
             # Plotting with matplotlib
             plt.figure(1)
             plt.plot(x_distances, y_temperatures)
+            plt.xlabel("Distance from center of cooler [m]")
+            plt.ylabel("Temperature at point [degrees C]")
+            plt.title("Fourier's Law Analysis of Thermal Leakage Temperatures")
             plt.savefig("sim_plot.png")
             plt.show()
+            # Print some important numbers
+            print("The following quantities describe the analysis: \n")
+            print("The inner, cooler temperature used was {} degrees C. \n".format(inner_temp))
+            print("The outer, ambient temperature used was {} degrees C. \n".format(outer_temp))
+            print("The thermal leakage was measured as {} W. \n".format(Q_total))
+            print("The thermal resistance was measured as {} C/W. \n".format(R_eq))
 
         therm_rads = get_thermal_resistance(cooler_ans)
         print(therm_rads)
-        run_sim_plot()
+        run_sim_plot(cooler_ans, therm_rads, 2, 25)
