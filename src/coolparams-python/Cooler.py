@@ -28,7 +28,7 @@ class Cooler(cmd.Cmd):
             """
             custom_fig = Figlet(font='slant')
             print(custom_fig.renderText(' status'))
-            print("You are running Cooler Params Version 0.0.1")
+            print("You are running Cooler Params Version 0.0.2")
         status()
 
     def do_whoami(self, arg):

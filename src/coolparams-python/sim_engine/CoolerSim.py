@@ -135,4 +135,4 @@ class CoolerSim:
 
         therm_rads = get_thermal_resistance(cooler_ans)
         print(therm_rads)
-        run_sim_plot(cooler_ans, therm_rads, 2, 25)
+        run_sim_plot(cooler_ans, therm_rads, 5, 43)
