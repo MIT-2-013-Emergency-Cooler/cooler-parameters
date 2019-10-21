@@ -7,7 +7,8 @@ import sys
 import os
 import getpass
 from pyfiglet import Figlet
-from sim_engine.CoolerSim import CoolerSim
+from .sim_engine.CoolerSim import CoolerSim
+from .sim_engine.PCMcalc import PCMcalc
 
 
 class Cooler(cmd.Cmd):
@@ -49,6 +50,13 @@ class Cooler(cmd.Cmd):
         coolsim_obj = CoolerSim()
         coolsim_ans = coolsim_obj.get_sim_params()
         coolsim_obj.run_simulation(coolsim_ans)
+
+    def do_PCM_calculator(self, arg):
+        """Simple calculator for looking at how long a PCM material will last in supplied cooler conditions.
+        """
+        pcmcalc_obj = PCMcalc()
+        pcmcalc_ans = PCMcalc.get_pcm_params()
+        pcmcalc_obj.run_simulation(pcmcalc_ans)
 
 
     def do_bye(self, arg):
